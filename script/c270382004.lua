@@ -19,9 +19,9 @@ function s.initial_effect(c)
 	e2:SetValue(s.atkval)
 	c:RegisterEffect(e2)
 end
-s.listed_names={2002}
+s.listed_names={270382002}
 function s.filter(c,e,tp)
-	return c:IsCode(2002) and c:IsAbleToHand()
+	return c:IsCode(270382002) and c:IsAbleToHand()
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0

@@ -15,7 +15,7 @@ function s.ssfilter(c)
 	return c:IsFaceup() and c:IsSetCard(0xBB8)
 end
 function s.cfilter(c)
-	return c:IsCode(3000)
+	return c:IsCode(270383000)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local ss,mz=Duel.IsExistingMatchingCard(s.ssfilter,tp,LOCATION_MZONE,0,1,nil),Duel.GetLocationCount(tp,LOCATION_MZONE)>0

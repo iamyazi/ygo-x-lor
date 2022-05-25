@@ -1,9 +1,9 @@
 --draven
 local s,id=GetID()
 function s.initial_effect(c)
-    c:SetUniqueOnField(1,0,id)
-    --search axes
-    local e1=Effect.CreateEffect(c)
+	c:SetUniqueOnField(1,0,id)
+	--search axes
+	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e1:SetType(EFFECT_TYPE_TRIGGER_F+EFFECT_TYPE_SINGLE)
@@ -40,12 +40,12 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 end
 
-s.listed_names={1001}
+s.listed_names={270381001}
 function s.filter(c)
-	return c:IsCode(1001) and c:IsAbleToHand()
+	return c:IsCode(270381001) and c:IsAbleToHand()
 end
 function s.filter2(c)
-	return c:IsCode(1000) and c:IsAbleToHand()
+	return c:IsCode(270381000) and c:IsAbleToHand()
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end

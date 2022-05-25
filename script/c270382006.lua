@@ -32,6 +32,6 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 			Duel.HintSelection(dg,true)
 			Duel.Destroy(dg,REASON_EFFECT)
 		end
-		Duel.Damage(1-tp,#hg*600,REASON_EFFECT)
+		Duel.Damage(1-tp,#hg*400,REASON_EFFECT)
 	end
 end

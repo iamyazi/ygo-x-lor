@@ -14,9 +14,9 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 
-s.listed_names={3000}
+s.listed_names={270383000}
 function s.filter(c)
-	return c:IsCode(3000)
+	return c:IsCode(270383000)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then 

@@ -38,7 +38,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.atkfilter(c)
-	return c:IsFaceup() and c:IsCode(2002)
+	return c:IsFaceup() and c:IsCode(270382002)
 end
 function s.atkval(e,c)
 	local g=Duel.GetMatchingGroup(s.atkfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,nil)

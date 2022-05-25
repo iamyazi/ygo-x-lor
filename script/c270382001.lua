@@ -25,7 +25,7 @@ end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return not Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT)
 		and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
-		and Duel.IsPlayerCanSpecialSummonMonster(tp,2000,0,TYPES_TOKEN,500,500,1,RACE_MACHINE,ATTRIBUTE_DARK) end
+		and Duel.IsPlayerCanSpecialSummonMonster(tp,270382000,0,TYPES_TOKEN,500,500,1,RACE_MACHINE,ATTRIBUTE_DARK) end
 	Duel.SetOperationInfo(0,CATEGORY_TOKEN,nil,1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,0)
 end
@@ -34,8 +34,8 @@ function s.con(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if not Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
-		and Duel.IsPlayerCanSpecialSummonMonster(tp,2000,0,TYPES_TOKEN,500,500,1,RACE_MACHINE,ATTRIBUTE_DARK) then
-		local token=Duel.CreateToken(tp,2000)
+		and Duel.IsPlayerCanSpecialSummonMonster(tp,270382000,0,TYPES_TOKEN,500,500,1,RACE_MACHINE,ATTRIBUTE_DARK) then
+		local token=Duel.CreateToken(tp,270382000)
 		Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP)
 		--Cannot be tributed for a tribute summon
 		local e1=Effect.CreateEffect(e:GetHandler())

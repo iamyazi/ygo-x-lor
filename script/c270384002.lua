@@ -10,7 +10,15 @@ function s.initial_effect(c)
     e1:SetCondition(s.condition)
     e1:SetTarget(s.target)
     e1:SetOperation(s.operation)
-    c:RegisterEffect(e1)
+	c:RegisterEffect(e1)
+	--direct attack
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD)
+	e2:SetCode(EFFECT_DIRECT_ATTACK)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetTargetRange(0,LOCATION_MZONE)
+	e2:SetTarget(s.dirtg)
+	c:RegisterEffect(e2)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsReason(REASON_DESTROY)
@@ -38,4 +46,7 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		token:RegisterEffect(e1,true)
 		Duel.SpecialSummonComplete()
 	end
+end
+function s.dirtg(e,c)
+	return not Duel.IsExistingMatchingCard(nil,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,e:GetHandler())
 end

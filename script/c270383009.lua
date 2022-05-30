@@ -30,7 +30,7 @@ function s.matfilter1(c,fc,sumtype,tp)
 	return c:IsSetCard(0xBB8,fc,sumtype,tp) and c:IsAttackAbove(2500)
 end
 function s.matfilter2(c,fc,sumtype,tp)
-	return c:IsSetCard(0xBB8,fc,sumtype,tp) and c:IsLevel(1)
+	return c:IsLevel(1)
 end
 function s.splimit(e,se,sp,st)
 	return (st&SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION

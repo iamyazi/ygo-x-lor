@@ -47,6 +47,10 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummonComplete()
 	end
 end
+function s.dirfilter(c)
+	return c:IsCode(270384002)
+end
 function s.dirtg(e,c)
-	return not Duel.IsExistingMatchingCard(nil,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,e:GetHandler())
+	g=Duel.GetMatchingGroup(s.dirfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,nil)
+	return not Duel.IsExistingMatchingCard(nil,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,g)
 end

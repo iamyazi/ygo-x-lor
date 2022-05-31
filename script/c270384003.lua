@@ -16,11 +16,17 @@ function s.initial_effect(c)
 	e2:SetTarget(s.sptg)
 	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
-
+end
+function s.threshcheckfilter(c,e,tp)
+	return not c:IsCode(270384004)
 end
 function s.desfilter(c,e,tp)
-    return c:IsFaceup() and c:HasLevel() and not c:IsCode(270384004) and Duel.GetMZoneCount(tp,c)>0
-        and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp,c:GetLevel())
+	local g=Duel.GetMatchingGroup(s.threshcheckfilter,tp,LOCATION_MZONE,0,nil,e,tp)
+	local maxg=g:GetMaxGroup(Card.GetLevel)
+	local maxlv=maxg:GetFirst():GetLevel()
+	return c:IsFaceup() and c:HasLevel() and Duel.GetMZoneCount(tp,c)>0
+		and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp,maxlv) 
+		and not c:IsCode(270384004)
 end
 function s.spfilter(c,e,tp,lv)
     return c:IsLevel(lv+1) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)

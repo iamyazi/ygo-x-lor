@@ -18,6 +18,7 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_PHASE+PHASE_BATTLE_START)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCountLimit(1)
+	e2:SetCondition(s.spcon)
 	e2:SetCost(s.spcost)
 	e2:SetTarget(s.sptg)
 	e2:SetOperation(s.spop)
@@ -49,6 +50,9 @@ function s.countop(e,tp,eg,ep,ev,re,r,rp)
 	else
 		e:GetHandler():AddCounter(0xfa0,1)
 	end
+end
+function s.spcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetTurnPlayer()==tp
 end
 function s.filter(c,e,tp,ct)
 	return c:IsLevelBelow(ct) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)

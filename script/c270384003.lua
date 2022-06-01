@@ -37,6 +37,7 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
     Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
 	local g=Duel.GetMatchingGroup(s.desfilter,tp,LOCATION_MZONE,0,nil,e,tp)
 	if #g==0 then return end
 	local maxg=g:GetMaxGroup(Card.GetLevel)
@@ -49,6 +50,20 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		local spg=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp,lv)
 		if #spg>0 then
 			Duel.SpecialSummon(spg,0,tp,tp,false,false,POS_FACEUP)
+			--make fiend
+			local sstg=spg:GetFirst()
+			c:SetCardTarget(sstg)
+			local e1=Effect.CreateEffect(c)
+			e1:SetType(EFFECT_TYPE_SINGLE)
+			e1:SetCode(EFFECT_CHANGE_RACE)
+			e1:SetProperty(EFFECT_FLAG_OWNER_RELATE)
+			e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+			e1:SetValue(RACE_FIEND)
+			e1:SetCondition(s.rcon)
+			sstg:RegisterEffect(e1)
 		end
 	end
+end
+function s.rcon(e)
+	return e:GetOwner():IsHasCardTarget(e:GetHandler())
 end

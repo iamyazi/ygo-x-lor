@@ -17,11 +17,8 @@ function s.initial_effect(c)
 	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
 end
-function s.threshcheckfilter(c,e,tp)
-	return not c:IsCode(270384004)
-end
 function s.desfilter(c,e,tp)
-	local g=Duel.GetMatchingGroup(s.threshcheckfilter,tp,LOCATION_MZONE,0,nil,e,tp)
+	local g=Duel.GetMatchingGroup(nil,tp,LOCATION_MZONE,0,c:IsCode(270384004),e,tp)
 	local maxg=g:GetMaxGroup(Card.GetLevel)
 	local maxlv=maxg:GetFirst():GetLevel()
 	return c:IsFaceup() and c:HasLevel() and Duel.GetMZoneCount(tp,c)>0

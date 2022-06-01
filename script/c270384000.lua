@@ -7,12 +7,15 @@ function s.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
+	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
 end
 function s.filter(c,e,tp,tid)
-	return c:GetTurnID()==tid and (c:GetReason()&REASON_DESTROY)~=0 and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:GetTurnID()==tid 
+	--and (c:GetReason()&REASON_DESTROY)~=0
+	and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     local tid=Duel.GetTurnCount()

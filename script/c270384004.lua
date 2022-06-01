@@ -34,6 +34,15 @@ function s.initial_effect(c)
 	local e4=e3:Clone()
 	e4:SetCode(EFFECT_UPDATE_DEFENSE)
 	c:RegisterEffect(e4)
+	--shuffle to add helia
+	local e5=Effect.CreateEffect(c)
+	e5:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+	e5:SetType(EFFECT_TYPE_IGNITION)
+	e5:SetRange(LOCATION_HAND)
+	e5:SetCondition(s.addcon)
+	e5:SetTarget(s.addtg)
+	e5:SetOperation(s.addop)
+	c:RegisterEffect(e5)
 end
 function s.cfilter(c)
 	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousLocation(LOCATION_MZONE)
@@ -82,4 +91,31 @@ end
 function s.atkval(e,c)
 	local  counter=e:GetHandler():GetCounter(0xfa0)
 	return counter*100
+end
+function s.filter(c)
+	return c:IsCode(270384004) and c:IsFaceup()
+end
+function s.addcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_MZONE,0,1,nil)
+end
+function s.filter2(c)
+	return c:IsCode(270384003) and c:IsAbleToHand()
+end
+function s.addtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK,0,1,nil)
+	and c:IsAbleToDeckAsCost() end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+end
+function s.addop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local shuffle=Duel.SendtoDeck(c,nil,SEQ_DECKSHUFFLE,REASON_COST)
+	if shuffle==1 then 
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+		local g=Duel.SelectMatchingCard(tp,s.filter2,tp,LOCATION_DECK,0,1,1,nil)
+		if #g>0 then
+			Duel.SendtoHand(g,nil,REASON_EFFECT)
+			Duel.ConfirmCards(1-tp,g)
+		end
+	end
 end

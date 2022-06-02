@@ -59,9 +59,9 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
-s.listed_names={1001}
+s.listed_names={270381001}
 function s.filter2(c)
-	return c:IsCode(1001) and c:IsAbleToDeck()
+	return c:IsCode(270381001) and c:IsAbleToDeck()
 end
 function s.target2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_GRAVE) and s.filter2(chkc) end

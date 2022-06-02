@@ -26,7 +26,7 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,0,nil)
-	local atk=300
+	local atk=400
 	if #g==0 then return end
 	local tc=g:GetFirst()
 	for tc in aux.Next(g) do
@@ -43,7 +43,7 @@ function s.con(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,0,nil)
-	local atk=500
+	local atk=600
 	if #g==0 then return end
 	local tc=g:GetFirst()
 	for tc in aux.Next(g) do

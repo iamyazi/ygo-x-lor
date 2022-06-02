@@ -13,6 +13,15 @@ function s.initial_effect(c)
     e1:SetTarget(s.target)
     e1:SetOperation(s.operation)
     c:RegisterEffect(e1)
+    --cannot be battle target
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetCode(EFFECT_CANNOT_BE_BATTLE_TARGET)
+	e2:SetCondition(s.ccon)
+	e2:SetValue(aux.imval1)
+	c:RegisterEffect(e2)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()==tp
@@ -22,7 +31,7 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
     local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,0,nil)
-    local atk=300
+    local atk=Duel.GetFieldGroupCount(tp,LOCATION_MZONE,LOCATION_MZONE)*100
     --if #g==0 then return end
     local tc=g:GetFirst()
     for tc in aux.Next(g) do
@@ -33,4 +42,7 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
         e1:SetValue(atk)
         tc:RegisterEffect(e1)
     end
+end
+function s.ccon(e)
+	return Duel.GetFieldGroupCount(e:GetHandlerPlayer(),LOCATION_MZONE,0)>1
 end

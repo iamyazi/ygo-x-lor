@@ -18,18 +18,16 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.desfilter(c,e,tp)
-	local g=Duel.GetMatchingGroup(nil,tp,LOCATION_MZONE,0,c:IsCode(270384004),e,tp)
-	local maxg=g:GetMaxGroup(Card.GetLevel)
-	local maxlv=maxg:GetFirst():GetLevel()
-	return c:IsFaceup() and c:HasLevel() and Duel.GetMZoneCount(tp,c)>0
-		and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp,maxlv) 
-		and not c:IsCode(270384004)
+	return c:IsFaceup() and c:HasLevel() and not c:IsCode(270384004)
 end
 function s.spfilter(c,e,tp,maxlv)
+	local g=Duel.GetMatchingGroup(s.desfilter,tp,LOCATION_MZONE,0,e,tp)
+	local maxg=g:GetMaxGroup(Card.GetLevel)
+	local maxlv=maxg:GetFirst():GetLevel()
     return c:IsLevel(maxlv+1) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return Duel.IsExistingMatchingCard(s.desfilter,tp,LOCATION_MZONE,0,1,nil,e,tp) end
+    if chk==0 then return Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp,maxlv) end
     Duel.SetOperationInfo(0,CATEGORY_DESTROY,nil,1,0,0)
     Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
@@ -43,8 +41,11 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Hint(HINT_SELECTMSG, tp, HINTMSG_DESTROY)
 		maxg=maxg:Select(tp,1,1,nil)
 	end
+	function s.ssfilter(c,e,tp)
+		return c:IsLevel(lv+1) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
+	end
 	if Duel.Destroy(maxg,REASON_EFFECT)~=0 and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
-		local spg=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp,lv)
+		local spg=Duel.SelectMatchingCard(tp,s.ssfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
 		if #spg>0 then
 			Duel.SpecialSummon(spg,0,tp,tp,false,false,POS_FACEUP)
 			--make fiend

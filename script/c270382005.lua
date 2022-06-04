@@ -29,7 +29,7 @@ function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 		{b2,aux.Stringid(id,1)})
 	e:SetLabel(op)
 	if op==1 then
-		Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,e:GetHandler())
+		g=Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,e:GetHandler())
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
 		Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
 	else

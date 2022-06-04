@@ -6,8 +6,9 @@ function s.initial_effect(c)
 	--add counter
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_TO_GRAVE)
+	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetRange(LOCATION_MZONE)
+	e1:SetCode(EVENT_DESTROY)
 	e1:SetCondition(s.countcon)
 	e1:SetOperation(s.countop)
 	c:RegisterEffect(e1)
@@ -45,19 +46,25 @@ function s.initial_effect(c)
 	c:RegisterEffect(e5)
 end
 function s.cfilter(c)
-	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousLocation(LOCATION_MZONE)
+	return c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsLocation(LOCATION_MZONE)
 end
 function s.fieldfilter(c)
 	return c:IsFaceup() and c:IsCode(270384003)
 end
 function s.countcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(s.cfilter,1,nil)
+	local ct=eg:FilterCount(s.cfilter, nil)
+	if ct>0 and e:GetHandler():IsCanAddCounter(0xfa0,ct) then
+		e:SetLabel(ct)
+		return true
+	else
+		return false
+	end
 end
 function s.countop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.IsExistingMatchingCard(s.fieldfilter,tp,LOCATION_FZONE,0,1,nil) then 
-		e:GetHandler():AddCounter(0xfa0,2) 
+		e:GetHandler():AddCounter(0xfa0,e:GetLabel()*2)
 	else
-		e:GetHandler():AddCounter(0xfa0,1)
+		e:GetHandler():AddCounter(0xfa0,e:GetLabel())
 	end
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)

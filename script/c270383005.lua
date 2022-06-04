@@ -53,7 +53,7 @@ function s.tdop(e,tp,eg,ep,ev,re,r,rp)
 		local g=Group.FromCards(c,tc)
 		Duel.SendtoDeck(g,nil,0,REASON_EFFECT)
 		Duel.ShuffleDeck(tp)
-			Duel.BreakEffect()
-			Duel.Draw(tp,1,REASON_EFFECT)
+		Duel.BreakEffect()
+		Duel.Draw(tp,1,REASON_EFFECT)
 	end
 end

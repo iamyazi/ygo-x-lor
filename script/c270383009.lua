@@ -61,7 +61,7 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_EFFECT)
 end
 function s.filter(c,e,tp)
-	return c:IsAttackAbove(2500) and c:IsSetCard(0xBB8) and c:IsCanBeSpecialSummoned(e,0,tp,true,true,POS_FACEUP) and not c:IsCode(3009)
+	return c:IsAttackAbove(2500) and c:IsSetCard(0xBB8) and c:IsCanBeSpecialSummoned(e,0,tp,true,true,POS_FACEUP) and not c:IsCode(270383009)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_GRAVE) and s.filter(chkc,e,tp) end

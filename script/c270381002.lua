@@ -27,7 +27,7 @@ function s.initial_effect(c)
 	e4:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
-	e4:SetCode(EVENT_LEAVE_FIELD)
+	e4:SetCode(EVENT_DESTROYED)
 	e4:SetRange(LOCATION_GRAVE)
 	e4:SetCountLimit(1,id)
 	e4:SetCondition(s.spcon2)
@@ -95,13 +95,15 @@ function s.operation2(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.spfilter(c,tp)
-	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousLocation(LOCATION_MZONE) and c:IsPreviousControler(tp) and c:IsCode(270381000)
+	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousLocation(LOCATION_MZONE)
+	and c:IsPreviousControler(tp) and c:IsCode(270381000)
 end
 function s.spcon2(e,tp,eg,ep,ev,re,r)
-	return not eg:IsContains(e:GetHandler()) and eg:IsExists(s.spfilter,1,nil,tp)
+	return eg:IsExists(s.spfilter,1,nil,tp)
 end
 function s.sptg2(e,tp,eg,ep,ev,re,r,chk)
 	local c=e:GetHandler()
+	if chkc then return eg:IsContains(chkc) and s.filter(chkc,tp) end
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 		and c:IsCanBeSpecialSummoned(e,0,tp,false,false) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)

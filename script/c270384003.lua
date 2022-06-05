@@ -16,18 +16,29 @@ function s.initial_effect(c)
 	e2:SetTarget(s.sptg)
 	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
+	--All monsters become fiend
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetCode(EFFECT_CHANGE_RACE)
+	e3:SetRange(LOCATION_FZONE)
+	e3:SetTargetRange(LOCATION_MZONE,0)
+	e3:SetValue(RACE_FIEND)
+	c:RegisterEffect(e3)
 end
 function s.desfilter(c,e,tp)
 	return c:IsFaceup() and c:HasLevel() and not c:IsCode(270384004)
 end
 function s.spfilter(c,e,tp,maxlv)
-	local g=Duel.GetMatchingGroup(s.desfilter,tp,LOCATION_MZONE,0,e,tp)
-	local maxg=g:GetMaxGroup(Card.GetLevel)
-	local maxlv=maxg:GetFirst():GetLevel()
-    return c:IsLevel(maxlv+1) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
+	if Duel.GetMatchingGroupCount(s.desfilter,tp,LOCATION_MZONE,0,e,tp)>0 then 
+		local g=Duel.GetMatchingGroup(s.desfilter,tp,LOCATION_MZONE,0,e,tp)
+		local maxg=g:GetMaxGroup(Card.GetLevel)
+		local maxlv=maxg:GetFirst():GetLevel()
+		return c:IsLevel(maxlv+1) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
+	else return false end
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp,maxlv) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp,maxlv)
+		and Duel.GetMatchingGroupCount(s.desfilter,tp,LOCATION_MZONE,0,e,tp)>0 end
     Duel.SetOperationInfo(0,CATEGORY_DESTROY,nil,1,0,0)
     Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
@@ -46,20 +57,6 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	if Duel.Destroy(maxg,REASON_EFFECT)~=0 and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
 		local spg=Duel.SelectMatchingCard(tp,s.ssfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
-		if #spg>0 then
-			Duel.SpecialSummon(spg,0,tp,tp,false,false,POS_FACEUP)
-			--make fiend
-			local sstg=spg:GetFirst()
-			c:SetCardTarget(sstg)
-			local e1=Effect.CreateEffect(c)
-			e1:SetType(EFFECT_TYPE_SINGLE)
-			e1:SetCode(EFFECT_CHANGE_RACE)
-			--e1:SetProperty(EFFECT_FLAG_OWNER_RELATE)
-			--e1:SetReset(RESET_EVENT+RESETS_STANDARD)
-			e1:SetValue(RACE_FIEND)
-			--e1:SetCondition(s.rcon)
-			sstg:RegisterEffect(e1)
-		end
 	end
 end
 function s.rcon(e)

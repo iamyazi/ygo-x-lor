@@ -55,8 +55,11 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	function s.ssfilter(c,e,tp)
 		return c:IsLevel(lv+1) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
 	end
-	if Duel.Destroy(maxg,REASON_EFFECT)~=0 and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
-		local spg=Duel.SelectMatchingCard(tp,s.ssfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
+	if Duel.IsExistingMatchingCard(s.ssfilter,tp,LOCATION_DECK,0,1,nil,e,tp)
+		and Duel.Destroy(maxg,REASON_EFFECT)~=0
+		and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
+		spg=Duel.SelectMatchingCard(tp,s.ssfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
+		Duel.SpecialSummon(spg,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
 function s.rcon(e)

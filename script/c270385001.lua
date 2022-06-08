@@ -18,6 +18,14 @@ function s.initial_effect(c)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
+	--register
+	local e3=Effect.CreateEffect(c)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetCode(EVENT_EQUIP)
+	e3:SetOperation(s.resetop)
+	e3:SetRange(LOCATION_SZONE)
+	c:RegisterEffect(e3)
 end
 s.listed_series={0x1388}
 function s.thfilter(c)
@@ -38,5 +46,12 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	if c:IsRelateToEffect(e) then
 		Duel.SendtoHand(c,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,c)
+	end
+end
+function s.resetop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if not eg:IsContains(c) or not c:IsLocation(LOCATION_SZONE) then return end
+	if c:GetFlagEffect(id)==0 then
+		c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD,0,1,0)
 	end
 end

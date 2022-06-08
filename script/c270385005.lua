@@ -38,7 +38,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 
     if Duel.IsExistingMatchingCard(s.equipfilter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,nil,e,tp)
         and Duel.SelectYesNo(tp,aux.Stringid(id,0)) and Duel.GetLocationCount(tp,LOCATION_SZONE)>0 then
-        eq=Duel.SelectMatchingCard(tp,s.equipfilter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,1,nil)
+        local eq=Duel.SelectMatchingCard(tp,s.equipfilter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,1,nil)
         local ec=eq:GetFirst()
         Duel.Equip(tp,ec,tc)
     end

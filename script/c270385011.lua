@@ -26,20 +26,30 @@ function s.initial_effect(c)
 	e3:SetCondition(s.spcon)
 	e3:SetTarget(s.sptg)
 	e3:SetOperation(s.spop)
-    c:RegisterEffect(e3)
-    --destroy
+	c:RegisterEffect(e3)
+	--targeted
 	local e4=Effect.CreateEffect(c)
-    e4:SetCategory(CATEGORY_DESTROY)
-    --e4:SetProperty(EFFECT_FLAG_DELAY)
+	e4:SetCategory(CATEGORY_NEGATE)
 	e4:SetType(EFFECT_TYPE_QUICK_O)
 	e4:SetCode(EVENT_CHAINING)
-    e4:SetRange(LOCATION_MZONE)
-    e4:SetCountLimit(1)
-	e4:SetCondition(s.descon)
-	e4:SetCost(s.descost)
-	e4:SetTarget(s.destg)
-	e4:SetOperation(s.desop)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
+	e4:SetCondition(s.tarcon)
+	e4:SetCost(s.tarcost)
+	e4:SetTarget(s.tartg)
+	e4:SetOperation(s.tarop)
 	c:RegisterEffect(e4)
+    --destroy
+	local e5=Effect.CreateEffect(c)
+    e5:SetCategory(CATEGORY_DESTROY)
+	e5:SetType(EFFECT_TYPE_QUICK_O)
+	e5:SetCode(EVENT_CHAINING)
+    e5:SetRange(LOCATION_MZONE)
+    e5:SetCountLimit(1)
+	e5:SetCondition(s.descon)
+	e5:SetTarget(s.destg)
+	e5:SetOperation(s.desop)
+	c:RegisterEffect(e5)
 end
 function s.atkfilter(c)
     return c:IsType(TYPE_EQUIP) and c:IsType(TYPE_SPELL) and c:IsFaceup()
@@ -77,17 +87,32 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.EquipComplete()
 end
+function s.tarfilter(c,tp)
+	return c:IsFaceup() and c:IsSetCard(0x1388) and c:IsControler(tp) and c:IsOnField() and c:IsType(TYPE_MONSTER)
+end
+function s.tarcon(e,tp,eg,ep,ev,re,r,rp)
+	if e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) then return false end
+	if not (rp==1-tp and re:IsHasProperty(EFFECT_FLAG_CARD_TARGET) and Duel.IsChainNegatable(ev)) then return false end
+	local g=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS)
+	return g and g:IsExists(s.tarfilter,1,nil,tp)
+end
+function s.tarcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST) end
+	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
+end
+function s.tartg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
+end
+function s.tarop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.NegateActivation(ev)
+end
 function s.descon(e,tp,eg,ep,ev,re,r,rp)
 	local loct=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_LOCATION)
     return loct==LOCATION_MZONE and re:IsActiveType(TYPE_MONSTER)
         and re:GetHandler():IsControler(tp) and re:GetHandler():IsSetCard(0x1388)
         and e:GetHandler():GetOverlayGroup():IsExists(Card.IsSetCard,1,nil,0x1388)
         --and not e:GetHandler():IsStatus(STATUS_CHAINING)
-end
-function s.descost(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	if chk==0 then return c:CheckRemoveOverlayCard(tp,1,REASON_COST) end
-	c:RemoveOverlayCard(tp,1,1,REASON_COST)
 end
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,tp,LOCATION_SZONE,LOCATION_SZONE,1,nil) end

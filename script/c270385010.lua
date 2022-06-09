@@ -20,68 +20,64 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,LOCATION_MZONE,0,1,nil)
         and Duel.IsExistingTarget(s.cfilter,tp,0,LOCATION_MZONE,1,nil)
         and Duel.GetLocationCount(tp,LOCATION_SZONE)>0 end
+    local g1=Duel.SelectTarget(tp,s.cfilter,tp,0,LOCATION_MZONE,1,1,nil)
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SELECT)
-    Duel.SelectTarget(tp,s.cfilter,tp,0,LOCATION_MZONE,1,1,nil)
-    Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_MZONE,0,1,1,nil)
+    local g2=Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_MZONE,0,1,1,nil)
+    e:SetLabelObject(g2:GetFirst())
+    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SELECT)
 end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
     local c=e:GetHandler()
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	local sc=g:GetFirst()
-    local tc=g:GetNext()
-    if sc:IsAbleToChangeControler() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0 then
-        s.equipop(sc,e,tp,tc)
+	if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
+	local g=Duel.GetTargetCards(e)
+	if #g<2 then return end
+	local tc=g:GetFirst()
+	local oc=g:GetNext()
+	if oc==e:GetLabelObject() then tc,oc=oc,tc end
+	if not (tc:IsFaceup() and tc:IsControler(tp)) then return end
+	if Duel.Equip(tp,oc,tc) then		
+		--Equip limit
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_EQUIP_LIMIT)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+		e1:SetValue(s.eqlimit)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+		e1:SetLabelObject(tc)
+        oc:RegisterEffect(e1)
+        local atk=tc:GetBaseAttack()
+        local def=tc:GetBaseDefense()
+        --sp sum equipped back to owner
+        local e2=Effect.CreateEffect(c)
+        e2:SetType(EFFECT_TYPE_EQUIP+EFFECT_TYPE_CONTINUOUS)
+        e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_OWNER_RELATE)
+        e2:SetCode(EFFECT_DESTROY_REPLACE)
+        e2:SetTarget(s.reptg)
+        oc:RegisterEffect(e2)
+        --atkdown
+        local e3=Effect.CreateEffect(c)
+        e3:SetType(EFFECT_TYPE_EQUIP)
+        e3:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_OWNER_RELATE)
+        e3:SetCode(EFFECT_UPDATE_ATTACK)
+        e3:SetReset(RESET_EVENT+RESETS_STANDARD)
+        e3:SetValue(-atk)
+        oc:RegisterEffect(e3)
+        --defdown
+        local e4=e3:Clone()
+        e4:SetCode(EFFECT_UPDATE_DEFENSE)
+        e4:SetValue(-def)
+        oc:RegisterEffect(e4)
     end
 end
-function s.equipop(c,e,tp,sc)
-    local atk=sc:GetBaseAttack()
-    local def=sc:GetBaseDefense()
-    if not aux.EquipByEffectAndLimitRegister(c,e,tp,sc,nil,true) then return end
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_EQUIP_LIMIT)
-	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-	e1:SetValue(true)
-	e1:SetReset(RESET_EVENT+RESETS_STANDARD)
-    sc:RegisterEffect(e1)
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_EQUIP+EFFECT_TYPE_CONTINUOUS)
-	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_OWNER_RELATE)
-	e2:SetCode(EFFECT_DESTROY_REPLACE)
-    e2:SetTarget(s.reptg)
-	--e2:SetOperation(s.repop)
-    sc:RegisterEffect(e2)
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_EQUIP)
-	e3:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_OWNER_RELATE)
-	e3:SetCode(EFFECT_UPDATE_ATTACK)
-	e3:SetReset(RESET_EVENT+RESETS_STANDARD)
-	e3:SetValue(-atk)
-    sc:RegisterEffect(e3)
-    local e4=e3:Clone()
-    e4:SetCode(EFFECT_UPDATE_DEFENSE)
-    e4:SetValue(-def)
-    sc:RegisterEffect(e4)
+function s.eqlimit(e,c)
+	return e:GetLabelObject()==c
 end
 function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	if chk==0 then return not c:IsReason(REASON_REPLACE) end
+    local c=e:GetHandler()
+    if chk==0 then return not c:IsReason(REASON_REPLACE) end
     local c=e:GetHandler()
     local tg=c:GetEquipTarget()
     if Duel.SpecialSummon(c,0,tp,1-tp,false,false,POS_FACEUP) and Duel.Destroy(tg, REASON_EFFECT) then
     return false
-	else return true end
+    else return true end
 end
---[[
-function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-    local c=e:GetHandler()
-    if chk==0 then return not c:IsReason(REASON_REPLACE) end
-    return true
-end
-function s.repop(e,tp,eg,ep,ev,re,r,rp)
-    local c=e:GetHandler()
-    local tg=c:GetEquipTarget()
-    Duel.SpecialSummon(c,0,tp,1-tp,false,false,POS_FACEUP)
-    Duel.Destroy(tg, REASON_EFFECT)
-end
---]]

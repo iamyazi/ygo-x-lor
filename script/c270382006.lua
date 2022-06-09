@@ -23,9 +23,9 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 	local hg=Duel.GetFieldGroup(tp,LOCATION_HAND,0)
 	local g=Duel.GetMatchingGroup(nil,tp,0,LOCATION_ONFIELD,nil)
 	discard=Duel.SendtoGrave(hg,REASON_EFFECT+REASON_DISCARD)
-	draw=Duel.Draw(tp, 3, REASON_EFFECT)
-	if discard>0 and draw>0 then
+	if Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)==0 then
 		Duel.BreakEffect()
+		draw=Duel.Draw(tp, 3, REASON_EFFECT)
 		if #g>0 then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
 			local dg=g:Select(tp,1,1,nil)

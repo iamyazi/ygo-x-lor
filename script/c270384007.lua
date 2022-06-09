@@ -14,17 +14,17 @@ function s.initial_effect(c)
 	e1:SetTarget(s.sptg)
 	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
-	--rez
-	local e2=Effect.CreateEffect(c)
-	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
-	e2:SetCode(EVENT_TO_GRAVE)
-	e2:SetRange(LOCATION_GRAVE)
-	e2:SetCondition(s.spcon2)
-	e2:SetTarget(s.sptg2)
-	e2:SetOperation(s.spop2)
-	c:RegisterEffect(e2)
+	--rez 
+	local e4=Effect.CreateEffect(c)
+	e4:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
+	e4:SetCode(EVENT_DESTROYED)
+	e4:SetRange(LOCATION_GRAVE)
+	e4:SetCondition(s.spcon2)
+	e4:SetTarget(s.sptg2)
+	e4:SetOperation(s.spop2)
+	c:RegisterEffect(e4)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and chkc~=e:GetHandler() end
@@ -49,17 +49,21 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterEffect(e1)
 	end
 end
-function s.filter(c,tp)
-	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousLocation(LOCATION_MZONE) and c:IsPreviousControler(tp)
+function s.spfilter(c,tp)
+	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_BATTLE+REASON_EFFECT) 
+	and c:IsPreviousLocation(LOCATION_MZONE)
+	and c:IsPreviousControler(tp)
+	and c:IsLocation(LOCATION_GRAVE)
 end
 function s.spcon2(e,tp,eg,ep,ev,re,r)
-	return not eg:IsContains(e:GetHandler()) and eg:IsExists(s.filter,1,nil,tp)
+	return not eg:IsContains(e:GetHandler()) and eg:IsExists(s.spfilter,1,nil,tp)
 end
 function s.sptg2(e,tp,eg,ep,ev,re,r,chk)
 	local c=e:GetHandler()
+	if chkc then return eg:IsContains(chkc) and s.filter(chkc,tp) end
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 		and c:IsCanBeSpecialSummoned(e,0,tp,false,false) end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,tp,LOCATION_GRAVE)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
 end
 function s.spop2(e,tp,eg,ep,ev,re,r)
 	local c=e:GetHandler()

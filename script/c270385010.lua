@@ -32,7 +32,9 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetTargetCards(e)
 	if #g<2 then return end
 	local tc=g:GetFirst()
-	local oc=g:GetNext()
+    local oc=g:GetNext()
+    local atk=oc:GetBaseAttack()
+    local def=oc:GetBaseDefense()
 	if oc==e:GetLabelObject() then tc,oc=oc,tc end
 	if not (tc:IsFaceup() and tc:IsControler(tp)) then return end
 	if Duel.Equip(tp,oc,tc) then		
@@ -45,8 +47,6 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 		e1:SetLabelObject(tc)
         oc:RegisterEffect(e1)
-        local atk=tc:GetBaseAttack()
-        local def=tc:GetBaseDefense()
         --sp sum equipped back to owner
         local e2=Effect.CreateEffect(c)
         e2:SetType(EFFECT_TYPE_EQUIP+EFFECT_TYPE_CONTINUOUS)

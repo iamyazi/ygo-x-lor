@@ -96,7 +96,7 @@ end
 
 function s.spfilter(c,tp)
 	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousLocation(LOCATION_MZONE)
-	and c:IsPreviousControler(tp) and c:IsCode(270381000)
+	and c:IsPreviousControler(tp) and c:IsCode(270381000) and c:IsLocation(LOCATION_GRAVE)
 end
 function s.spcon2(e,tp,eg,ep,ev,re,r)
 	return eg:IsExists(s.spfilter,1,nil,tp)
@@ -106,7 +106,7 @@ function s.sptg2(e,tp,eg,ep,ev,re,r,chk)
 	if chkc then return eg:IsContains(chkc) and s.filter(chkc,tp) end
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 		and c:IsCanBeSpecialSummoned(e,0,tp,false,false) end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,tp,LOCATION_GRAVE)
 end
 function s.spop2(e,tp,eg,ep,ev,re,r)
 	local c=e:GetHandler()

@@ -11,15 +11,16 @@ function s.initial_effect(c)
 	e1:SetOperation(s.op)
 	c:RegisterEffect(e1)
 	--atk/def up
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(id,1))
-	e1:SetCategory(CATEGORY_ATKCHANGE)
-	e1:SetType(EFFECT_TYPE_TRIGGER_F+EFFECT_TYPE_FIELD)
-	e1:SetCode(EVENT_DISCARD)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetTarget(s.atktg)
-	e1:SetOperation(s.atkop)
-	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,1))
+	e2:SetCategory(CATEGORY_ATKCHANGE)
+	e2:SetType(EFFECT_TYPE_TRIGGER_F+EFFECT_TYPE_FIELD)
+	e2:SetCode(EVENT_TO_GRAVE)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetCondition(s.atkcon)
+	e2:SetTarget(s.atktg)
+	e2:SetOperation(s.atkop)
+	c:RegisterEffect(e2)
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) and
@@ -34,6 +35,12 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 	if discard>0 then
 		draw=Duel.Draw(tp, 1, REASON_EFFECT)
 	end
+end
+function s.atkfilter(c,tp)
+	return c:IsPreviousControler(tp)
+end
+function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(s.atkfilter,1,nil,tp)
 end
 function s.atktg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsRelateToEffect(e) and e:GetHandler():IsFaceup() end

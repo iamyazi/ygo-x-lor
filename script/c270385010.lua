@@ -33,11 +33,13 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	if #g<2 then return end
 	local tc=g:GetFirst()
     local oc=g:GetNext()
+    if oc==e:GetLabelObject() then tc,oc=oc,tc end
     local atk=oc:GetBaseAttack()
     local def=oc:GetBaseDefense()
-	if oc==e:GetLabelObject() then tc,oc=oc,tc end
-	if not (tc:IsFaceup() and tc:IsControler(tp)) then return end
-	if Duel.Equip(tp,oc,tc) then		
+    Debug.Message(atk)
+    Debug.Message(def)
+	if not (tc:IsFaceup() and oc:IsFaceup()) then return end
+	if Duel.Equip(tp,oc,tc) then
 		--Equip limit
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
@@ -75,7 +77,6 @@ end
 function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
     local c=e:GetHandler()
     if chk==0 then return not c:IsReason(REASON_REPLACE) end
-    local c=e:GetHandler()
     local tg=c:GetEquipTarget()
     if Duel.SpecialSummon(c,0,tp,1-tp,false,false,POS_FACEUP) and Duel.Destroy(tg, REASON_EFFECT) then
     return false

@@ -37,7 +37,7 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.atkfilter(c,tp)
-	return c:IsPreviousControler(tp)
+	return c:IsPreviousControler(tp) and c:IsReason(REASON_DISCARD)
 end
 function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.atkfilter,1,nil,tp)

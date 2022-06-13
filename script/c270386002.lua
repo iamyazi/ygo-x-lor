@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
     --link summon
     c:EnableReviveLimit()
-    Link.AddProcedure(c,nil,2,nil,s.spcheck)
+    Link.AddProcedure(c,aux.NOT(aux.FilterBoolFunctionEx(Card.IsType,TYPE_TOKEN)),2,nil,s.spcheck)
 	--Add from Deck to hand
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))

@@ -14,7 +14,8 @@ function s.initial_effect(c)
 	e1:SetOperation(s.ctop)
     c:RegisterEffect(e1)
     local e2=e1:Clone()
-    e2:SetCode(EVENT_BATTLE_DAMAGE)
+	e2:SetCode(EVENT_BATTLE_DAMAGE)
+	e2:SetCondition(s.ccon)
     e2:SetCountLimit(99)
     c:RegisterEffect(e2)
     --summon stormcloud
@@ -38,6 +39,9 @@ function s.initial_effect(c)
 	e4:SetOperation(s.posop)
 	e4:SetHintTiming(0,TIMINGS_CHECK_MONSTER+TIMING_END_PHASE)
 	c:RegisterEffect(e4)
+end
+function s.ccon(e,tp,eg,ep,ev,re,r,rp)
+	return ep==tp
 end
 function s.ctop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

@@ -82,10 +82,9 @@ end
 function s.cpsoperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
-	local tg=Duel.GetTargetCards(e)
-	for tc in tg:Iter() do
-		Duel.HintSelection(Group.FromCards(tc))
-		Duel.Hint(HINT_CARD,tp,tc:GetOriginalCode())
+	local tc=Duel.GetFirstTarget()
+		--Duel.HintSelection(Group.FromCards(tc))
+		--Duel.Hint(HINT_CARD,tp,tc:GetOriginalCode())
 		local scale = s.getscale(tc)
 		local opt = (scale <= 1) and 1 or 2
 		if opt == 2 then
@@ -106,7 +105,6 @@ function s.cpsoperation(e,tp,eg,ep,ev,re,r,rp)
 		local e2=e1:Clone()
 		e2:SetCode(EFFECT_UPDATE_RSCALE)
 		tc:RegisterEffect(e2)
-	end
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

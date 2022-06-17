@@ -41,5 +41,6 @@ function s.retcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetLabelObject():GetFlagEffect(id)~=0
 end
 function s.sumop(e,tp,eg,ep,ev,re,r,rp)
-    Duel.SpecialSummon(e:GetLabelObject(),0,tp,tp,false,false,POS_FACEUP)
+    local tg=e:GetLabelObject()
+    Duel.SpecialSummon(tg,0,tg:GetControler(),tg:GetControler(),false,false,POS_FACEUP)
 end

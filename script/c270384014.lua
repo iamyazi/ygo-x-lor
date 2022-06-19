@@ -13,7 +13,7 @@ function s.initial_effect(c)
     c:RegisterEffect(e1)	
 end
 function s.cfilter(c,tp)
-	return c:IsType(TYPE_MONSTER) and c:IsFaceup() and c:IsAbleToChangeControler()
+	return c:IsType(TYPE_MONSTER) and c:IsFaceup()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
@@ -30,10 +30,9 @@ end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	local tc=g:GetFirst()
-	local sc=g:GetNext()
-	if not tc or not sc or not tc:IsRelateToEffect(e) or not sc:IsRelateToEffect(e) then return end
-	local ac=e:GetLabelObject()
-    if tc:IsRelateToEffect(e) and sc:IsRelateToEffect(e) and Duel.Destroy(tc,REASON_EFFECT)~=0 then
+    local sc=g:GetNext()
+    if sc==e:GetLabelObject() then tc,sc=sc,tc end
+    if tc:IsRelateToEffect(e) and Duel.Destroy(tc,REASON_EFFECT)~=0 and sc:IsRelateToEffect(e) then
         Duel.Destroy(sc, REASON_EFFECT)
     end
 end

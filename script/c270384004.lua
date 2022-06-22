@@ -76,7 +76,7 @@ end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
     local c=e:GetHandler()
     local ct=c:GetCounter(0xfa0)
-    if chk==0 then return c:IsCanRemoveCounter(tp,0xfa0,6,REASON_COST)
+    if chk==0 then return c:IsCanRemoveCounter(tp,0xfa0,1,REASON_COST)
         and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK+LOCATION_HAND,0,1,nil,e,tp,ct) 
     end
     c:RemoveCounter(tp,0xfa0,ct,REASON_COST)

@@ -38,5 +38,5 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.cfilter(c)
-	return c:IsType(TYPE_SPELL)
+	return c:IsType(TYPE_SPELL) and c:IsFaceup()
 end

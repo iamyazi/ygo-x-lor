@@ -44,7 +44,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.cfilter(c)
-	return c:IsType(TYPE_SPELL)
+	return c:IsType(TYPE_SPELL) and c:IsFaceup()
 end
 function s.repfilter(c,tp)
 	return c:IsFaceup() and c:IsSetCard(0x1b58) and c:IsLocation(LOCATION_ONFIELD)

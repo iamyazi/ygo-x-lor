@@ -32,7 +32,7 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_MZONE,0,1,1,nil)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
-    local def=Duel.GetMatchingGroupCount(s.cfilter,0,LOCATION_ONFIELD+LOCATION_GRAVE,0,nil)*100
+    local def=Duel.GetMatchingGroupCount(s.cfilter,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,nil)*100
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) and tc:IsFaceup() then
 		local e1=Effect.CreateEffect(e:GetHandler())

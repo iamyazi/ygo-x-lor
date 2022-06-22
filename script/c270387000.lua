@@ -37,6 +37,7 @@ function s.mtg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.mop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	if not c:IsRelateToEffect(e) then return end
 	local shuffle=Duel.SendtoDeck(c,nil,SEQ_DECKSHUFFLE,REASON_COST)
 	if shuffle==1 then 
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)

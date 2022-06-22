@@ -23,22 +23,17 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
-    if re:IsActiveType(TYPE_SPELL) and Duel.GetTurnCount()%2==0 then
+    if re:IsActiveType(TYPE_SPELL) then
 		Duel.RegisterFlagEffect(ep,id,RESET_PHASE+PHASE_END,0,2)
-	elseif re:IsActiveType(TYPE_SPELL) and Duel.GetTurnCount()%2~=0 then
-		Duel.RegisterFlagEffect(ep,id+1,RESET_PHASE+PHASE_END,0,2)
 	end
+	Duel.SetFlagEffectLabel(tp,id,Duel.GetTurnCount())
 end
 
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetTurnCount()%2~=0 then
-		return Duel.GetFlagEffect(tp,id)>=2
-	elseif Duel.GetTurnCount()%2==0 then
-		return Duel.GetFlagEffect(tp,id+1)>=2
-	end
+	return Duel.GetFlagEffect(tp,id)>=2 and Duel.GetTurnCount()==Duel.GetFlagEffectLabel(tp,id)+1
 end
 function s.thfilter(c)
-	return c:IsType(TYPE_SPELL) and not c:IsForbidden()
+	return c:IsType(TYPE_SPELL) and not c:IsCode(id) and not c:IsForbidden()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

@@ -26,9 +26,19 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_BATTLE_START)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e3:SetTarget(s.tg2)
-	e3:SetOperation(s.op2)
+	e3:SetTarget(s.tg)
+	e3:SetOperation(s.op)
 	c:RegisterEffect(e3)
+	--shuffle to add and send
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(id,2))
+	e5:SetCategory(CATEGORY_TOHAND+CATEGORY_TOGRAVE)
+	e5:SetType(EFFECT_TYPE_IGNITION)
+	e5:SetRange(LOCATION_HAND)
+	e5:SetCondition(s.condition)
+	e5:SetTarget(s.tg2)
+	e5:SetOperation(s.op2)
+	c:RegisterEffect(e5)
 end
 function s.atkfilter(c)
     return c:IsSetCard(0x1b58) and c:IsType(TYPE_MONSTER)
@@ -45,7 +55,7 @@ function s.spcon(e,c)
 	local ct=g:GetClassCount(Card.GetCode)
 	return ct>=8
 end
-function s.tg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+function s.tg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	local bc=Duel.GetAttackTarget()
 	if chk==0 then return bc and bc:IsCanBeEffectTarget(e) end
@@ -54,11 +64,48 @@ function s.tg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     Duel.SetOperationInfo(0,CATEGORY_TOHAND,bc,1,0,0)
     Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,0)
 end
-function s.op2(e,tp,eg,ep,ev,re,r,rp)
+function s.op(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	local dmg=tc:GetAttack()
     if tc and tc:IsRelateToEffect(e) then 
         Duel.SendtoHand(tc,nil,REASON_EFFECT)
     	Duel.Damage(1-tp,dmg+e:GetHandler():GetAttack(),REASON_EFFECT)
     end
+end
+function s.cfilter(c)
+	return c:IsCode(id) and c:IsFaceup()
+end
+function s.condition(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_MZONE,0,1,nil)
+end
+function s.filter(c,tp)
+	return c:IsSetCard(0x1b58) and c:IsType(TYPE_MONSTER)
+	and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,1,nil,c:GetCode())
+end
+function s.thfilter(c,code)
+	return c:IsSetCard(0x1b58) and c:IsType(TYPE_MONSTER) and not c:IsCode(code) and not c:IsForbidden()
+end
+function s.tg2(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) and g:GetClassCount(Card.GetCode)>=2
+		and c:IsAbleToDeckAsCost() end
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_DECK)
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+end
+function s.op2(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
+	if g==0 or g:GetClassCount(Card.GetCode)<2 then return end
+	if c:IsRelateToEffect(e) and Duel.SendtoDeck(c,nil,SEQ_DECKSHUFFLE,REASON_COST)>0 then 
+		Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
+		local g1=g:Select(tp,1,1,nil)
+		g:Remove(Card.IsCode,nil,g1:GetFirst():GetCode())
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+		local g2=g:Select(tp,1,1,nil)
+		Duel.SendtoGrave(g1,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,g1)
+		Duel.SendtoHand(g2,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,g2)
+	end
 end

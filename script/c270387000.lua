@@ -1,11 +1,11 @@
 --tail
 local s,id=GetID()
 function s.initial_effect(c)
-    --when recalled, shuffle to add
+    --when recalled, shuffle to set
 	local e2=Effect.CreateEffect(c)
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)    
     e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-    e2:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
+    e2:SetProperty(EFFECT_FLAG_DELAY)
     e2:SetRange(LOCATION_HAND)
     e2:SetCode(EVENT_TO_HAND)
     e2:SetCountLimit(1,id)
@@ -24,28 +24,31 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 function s.filter(c)
-	return c:IsCode(270387001) and c:IsAbleToHand()
+	return c:IsCode(270387001) and c:IsSSetable()
 end
 function s.mcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD)
 end
 function s.mtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,nil)
-		and c:IsAbleToDeckAsCost() end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK+LOCATION_GRAVE)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK+LOCATION_GRAVE+LOCATION_HAND,0,1,nil)
+		and c:IsAbleToDeckAsCost() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0 end
 end
 function s.mop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) then return end
+	if not c:IsRelateToEffect(e) or Duel.GetLocationCount(tp,LOCATION_SZONE)==0 or not Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK+LOCATION_GRAVE+LOCATION_HAND,0,1,nil) then return end
 	local shuffle=Duel.SendtoDeck(c,nil,SEQ_DECKSHUFFLE,REASON_COST)
 	if shuffle==1 then 
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-		local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,2,nil)
-		if #g>0 then
-			Duel.SendtoHand(g,nil,REASON_EFFECT)
-			Duel.ConfirmCards(1-tp,g)
-		end
+		local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK+LOCATION_GRAVE+LOCATION_HAND,0,1,1,nil):GetFirst()
+		Duel.SSet(tp,g)
+		Duel.ConfirmCards(1-tp,g)
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_QP_ACT_IN_SET_TURN)
+		e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+		g:RegisterEffect(e1)
 	end
 end
 function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk)

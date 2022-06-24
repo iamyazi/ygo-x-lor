@@ -95,7 +95,10 @@ function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
-		Duel.Destroy(tc, REASON_EFFECT)
+	local c=e:GetHandler()
+	if tc:IsRelateToEffect(e) and Duel.IsExistingMatchingCard(s.mfilter,tp,LOCATION_MZONE,0,1,c) then 
+		if Duel.Destroy(tc, REASON_EFFECT) and c:IsRelateToEffect(e) then
+			Duel.SendtoHand(c,nil,REASON_EFFECT)
+		end
 	end
 end

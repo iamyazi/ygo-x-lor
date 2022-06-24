@@ -24,7 +24,7 @@ function s.initial_effect(c)
 	e3:SetDescription(aux.Stringid(id,1))
 	e3:SetCategory(CATEGORY_TOHAND+CATEGORY_DAMAGE)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e3:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e3:SetCode(EVENT_BATTLE_START)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetTarget(s.tg2)
 	e3:SetOperation(s.op2)
@@ -58,8 +58,7 @@ function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	local dmg=tc:GetAttack()
     if tc and tc:IsRelateToEffect(e) then 
-        if Duel.SendtoHand(tc,nil,REASON_EFFECT) then
-            Duel.Damage(1-tp,dmg,REASON_EFFECT)
-        end
+        Duel.SendtoHand(tc,nil,REASON_EFFECT)
+    	Duel.Damage(1-tp,dmg+e:GetHandler():GetAttack(),REASON_EFFECT)
     end
 end

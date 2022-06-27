@@ -58,7 +58,7 @@ end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	local bc=Duel.GetAttackTarget()
-	if chk==0 then return bc and bc:IsCanBeEffectTarget(e) end
+	if chk==0 then return Duel.GetAttacker()==e:GetHandler() and bc and bc:IsCanBeEffectTarget(e) end
     Duel.SetTargetCard(bc)
     Duel.SetTargetPlayer(1-tp)
     Duel.SetOperationInfo(0,CATEGORY_TOHAND,bc,1,0,0)
@@ -67,9 +67,14 @@ end
 function s.op(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	local dmg=tc:GetAttack()
-    if tc and tc:IsRelateToEffect(e) then 
-        Duel.SendtoHand(tc,nil,REASON_EFFECT)
-    	Duel.Damage(1-tp,dmg+e:GetHandler():GetAttack(),REASON_EFFECT)
+	if tc and tc:IsRelateToEffect(e) then
+		if tc:IsFaceup() then 
+			Duel.SendtoHand(tc,nil,REASON_EFFECT)
+			Duel.Damage(1-tp,dmg+e:GetHandler():GetAttack(),REASON_EFFECT)
+		else
+			Duel.SendtoHand(tc,nil,REASON_EFFECT)
+			Duel.Damage(1-tp,e:GetHandler():GetAttack(),REASON_EFFECT)
+		end
     end
 end
 function s.cfilter(c)

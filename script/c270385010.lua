@@ -8,6 +8,7 @@ function s.initial_effect(c)
     e1:SetType(EFFECT_TYPE_ACTIVATE)
     e1:SetCode(EVENT_FREE_CHAIN)
     e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
+    e1:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E+TIMING_END_PHASE)
     e1:SetTarget(s.target)
     e1:SetOperation(s.operation)
     c:RegisterEffect(e1)
@@ -36,8 +37,6 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
     if oc==e:GetLabelObject() then tc,oc=oc,tc end
     local atk=oc:GetBaseAttack()
     local def=oc:GetBaseDefense()
-    Debug.Message(atk)
-    Debug.Message(def)
 	if not (tc:IsFaceup() and oc:IsFaceup()) then return end
 	if Duel.Equip(tp,oc,tc) then
 		--Equip limit

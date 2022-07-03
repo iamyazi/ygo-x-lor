@@ -24,7 +24,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.distg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) and Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,nil) end
+	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) and Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,e:GetHandler()) end
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp,chk)

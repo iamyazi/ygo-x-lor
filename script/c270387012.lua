@@ -30,7 +30,7 @@ function s.regop(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFlagEffect(tp,id)>=2 and Duel.GetTurnCount()==Duel.GetFlagEffectLabel(tp,id)+1
+	return Duel.GetFlagEffect(tp,id)>=2 and Duel.GetTurnCount()~=Duel.GetFlagEffectLabel(tp,id)
 end
 function s.thfilter(c)
 	return c:IsType(TYPE_SPELL) and not c:IsCode(id) and not c:IsForbidden()

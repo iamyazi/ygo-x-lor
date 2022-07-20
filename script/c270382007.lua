@@ -26,7 +26,7 @@ function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) and
 		Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)>0 end
 	Duel.SetTargetPlayer(tp)
-	Duel.SetTargetParam(3)
+	Duel.SetTargetParam(1)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
 end
 function s.op(e,tp,eg,ep,ev,re,r,rp)

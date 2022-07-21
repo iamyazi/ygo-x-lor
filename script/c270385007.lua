@@ -18,7 +18,7 @@ function s.filter(c)
 	return not c:IsStatus(STATUS_LEAVE_CONFIRMED) and c:IsType(TYPE_MONSTER)
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return not Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_MZONE+LOCATION_GRAVE,0,1,nil)
+	return not Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_MZONE,0,1,nil)
 end
 function s.spfilter(c,e,tp)
 	return c:IsCode(270385007) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)

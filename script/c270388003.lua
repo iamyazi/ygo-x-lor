@@ -31,19 +31,20 @@ end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return ep~=tp
 end
-function s.filter(c,e)
-	return c:IsLevel(1) and c:IsAbleToHand()
+function s.filter(c,e,tp)
+	return c:IsLevel(1) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil,e,tp) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,1,nil)
-	if #g>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,g)
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
+	local tc=g:GetFirst()
+	if tc then
+		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
 function s.checkop(e,tp,eg,ep,ev,re,r,rp)
@@ -66,7 +67,7 @@ function s.scop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetCode(EFFECT_UPDATE_ATTACK)
 	e1:SetTargetRange(LOCATION_MZONE,0)
 	e1:SetTarget(s.atktg)
-	e1:SetValue(400)
+	e1:SetValue(800)
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD_DISABLE)
 	Duel.RegisterEffect(e1,tp)
 end

@@ -2,6 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
     c:EnableCounterPermit(0x388)
+	--counter on act
 	local e0=Effect.CreateEffect(c)
 	e0:SetCategory(CATEGORY_COUNTER)
 	e0:SetType(EFFECT_TYPE_ACTIVATE)

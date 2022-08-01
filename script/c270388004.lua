@@ -87,7 +87,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.damcon(e,tp,eg,ep,ev,re,r,rp)
 	--return ep~=tp and rp==tp
-    return (r&REASON_EFFECT~=0 and rp~=ep) or r&REASON_BATTLE~=0
+    return (r&REASON_EFFECT~=0 or r&REASON_BATTLE~=0) and ep~=tp and rp==tp
 end
 function s.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsSSetable() end

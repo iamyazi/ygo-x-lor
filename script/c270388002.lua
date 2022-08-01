@@ -49,7 +49,7 @@ function s.bop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.checkop(e,tp,eg,ep,ev,re,r,rp)
-	if (r&REASON_EFFECT~=0 and rp~=ep) or r&REASON_BATTLE~=0 then
+	if (r&REASON_EFFECT~=0 or r&REASON_BATTLE~=0) and ep~=tp and rp==tp  then
 		Duel.RegisterFlagEffect(ep,id,RESET_PHASE+PHASE_END,0,1)
 	end
 end

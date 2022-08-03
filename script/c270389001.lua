@@ -12,25 +12,49 @@ function s.initial_effect(c)
     e1:SetOperation(s.operation)
     c:RegisterEffect(e1)	
 end
-function s.filter1(c,tp)
-    return c:IsFaceup() and Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) 
+function s.filter1(c)
+    return c:IsFaceup() and c:IsType(TYPE_SPELL+TYPE_TRAP)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-    if chkc then return false end
-    if chk==0 then return Duel.IsExistingTarget(s.filter1,tp,LOCATION_SZONE,0,1,e:GetHandler(),tp) end
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SELF)
-    local g1=Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_SZONE,0,1,1,e:GetHandler())
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-    local g2=Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
-    Duel.SetOperationInfo(0,CATEGORY_DESTROY,g1,1,0,0)
-    Duel.SetOperationInfo(0,CATEGORY_DESTROY,g2,1,0,0)
+    local b1=Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) and Duel.IsExistingTarget(s.filter1,tp,LOCATION_ONFIELD,0,1,e:GetHandler())
+    local b2=Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil)
+    if chk==0 then return b1 or b2 end
+    local op=aux.SelectEffect(tp,
+    {b1,aux.Stringid(id,0)},
+    {b2,aux.Stringid(id,1)})
+    e:SetLabel(op)
+    if op==1 then
+        if chkc then return false end
+        Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SELF)
+        local g1=Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_SZONE,0,1,1,e:GetHandler())
+        Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+        local g2=Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+        Duel.SetOperationInfo(0,CATEGORY_DESTROY,g1,1,0,0)
+        Duel.SetOperationInfo(0,CATEGORY_DESTROY,g2,1,0,0)
+    end
+    if op==2 then
+        if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsFaceup() end
+        Duel.PayLPCost(tp,math.floor(Duel.GetLP(tp)/2))
+        Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+        local g1=Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+        Duel.SetOperationInfo(0,CATEGORY_DESTROY,g1,1,0,0)
+    end
 end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	local tc=g:GetFirst()
-    local sc=g:GetNext()
-    if sc==e:GetLabelObject() then tc,sc=sc,tc end
-    if tc:IsRelateToEffect(e) and tc:IsFaceup() and Duel.Destroy(tc,REASON_EFFECT)~=0 and sc:IsRelateToEffect(e) then
-        Duel.Destroy(sc, REASON_EFFECT)
+    local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+    local op=e:GetLabel()
+    if op==1 then
+        local tc=g:GetFirst()
+        local sc=g:GetNext()
+        if sc==e:GetLabelObject() then tc,sc=sc,tc end
+        if tc:IsRelateToEffect(e) and Duel.Destroy(tc,REASON_EFFECT)~=0 and sc:IsRelateToEffect(e) then
+            Duel.Destroy(sc, REASON_EFFECT)
+        end
+    end
+    if op==2 then
+        local tc=g:GetFirst()
+        if tc:IsRelateToEffect(e) then
+            Duel.Destroy(tc, REASON_EFFECT)
+        end
     end
 end

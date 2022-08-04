@@ -28,13 +28,19 @@ function s.initial_effect(c)
 	e3:SetTarget(s.target)
 	e3:SetOperation(s.activate)
 	c:RegisterEffect(e3)
-	--on die
+	--to grave
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e4:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e4:SetCode(EVENT_TO_GRAVE)
+	e4:SetOperation(s.regop)
+	c:RegisterEffect(e4)
+	--act sarc
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(id,1))
-	e4:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e4:SetCode(EVENT_TO_GRAVE)
-	e4:SetProperty(EFFECT_FLAG_DELAY)
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCode(EVENT_PHASE+PHASE_END)
+	e4:SetRange(LOCATION_GRAVE)
 	e4:SetCondition(s.descon)
 	e4:SetCost(aux.bfgcost)
 	e4:SetTarget(s.destg)
@@ -69,9 +75,12 @@ local tc=Duel.GetFirstTarget()
         Duel.Destroy(tc,REASON_EFFECT)
     end
 end
-function s.descon(e,tp,eg,ep,ev,re,r,rp)
+function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_BATTLE+REASON_EFFECT)
+	c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
+end
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():GetFlagEffect(id)>0
 end
 function s.desfilter(c,tp)
 	return c:IsCode(270389005) and c:GetActivateEffect():IsActivatable(tp,true,true)
@@ -82,8 +91,8 @@ end
 function s.desop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,2))
 	local tc=Duel.SelectMatchingCard(tp,s.desfilter,tp,LOCATION_DECK,0,1,1,nil,tp):GetFirst()
-    local te=tc:GetActivateEffect()
-    if te:IsActivatable(tp,true,true) and Duel.GetLocationCount(tp,LOCATION_SZONE)>0 then
+	local te=tc:GetActivateEffect()
+    if Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and te:IsActivatable(tp,true,true) then 
         Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
         local te=tc:GetActivateEffect()
         local tep=tc:GetControler()
@@ -91,5 +100,6 @@ function s.desop(e,tp,eg,ep,ev,re,r,rp)
         if cost
             then cost(te,tep,eg,ep,ev,re,r,rp,1)
         end
+		tc:AddCounter(0x388,3)
     end
 end

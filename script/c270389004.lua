@@ -11,9 +11,11 @@ function s.initial_effect(c)
 	c:RegisterEffect(e0)
 	--draw when counter is removed
 	local e1=Effect.CreateEffect(c)
+	e1:SetCategory(CATEGORY_DRAW)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
 	e1:SetCode(EVENT_REMOVE_COUNTER+0x388)
 	e1:SetRange(LOCATION_SZONE)
+	e1:SetCondition(s.drawcon)
 	e1:SetTarget(s.drawtg)
 	e1:SetOperation(s.drawop)
 	c:RegisterEffect(e1)
@@ -33,11 +35,24 @@ function s.initial_effect(c)
 	e3:SetCondition(s.tgcon)
 	e3:SetOperation(s.tgop)
 	c:RegisterEffect(e3)
+    --draw on des
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,1))
+	e4:SetCategory(CATEGORY_DRAW)
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e4:SetCode(EVENT_DESTROYED)
+    e4:SetProperty(EFFECT_FLAG_DELAY)
+	e4:SetTarget(s.drawtg)
+	e4:SetOperation(s.drawop)
+	c:RegisterEffect(e4)
 end
 s.counter_place_list={0x388}
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	e:GetHandler():AddCounter(0x388,2)
+end
+function s.drawcon(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsContains(e:GetHandler())
 end
 function s.drawtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) end

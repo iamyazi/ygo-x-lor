@@ -16,6 +16,15 @@ function s.initial_effect(c)
 	local e3=e1:Clone()
 	e3:SetCode(EVENT_FLIP_SUMMON_SUCCESS)
 	c:RegisterEffect(e3)
+	--destroy replace
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e4:SetCode(EFFECT_DESTROY_REPLACE)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetTarget(s.reptg)
+	e4:SetOperation(s.repop)
+	c:RegisterEffect(e4)
 end
 function s.thfilter(c,tp)
 	return c:IsCode(270389002) and c:GetActivateEffect():IsActivatable(tp,true,true)
@@ -40,4 +49,23 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 						end
 					end,
 					aux.Stringid(id,3))
+end
+function s.filter1(c)
+    return c:IsFaceup() and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsType(TYPE_CONTINUOUS)
+end
+function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return not c:IsReason(REASON_REPLACE) and Duel.IsExistingTarget(s.filter1,tp,LOCATION_ONFIELD,0,1,nil) end
+	if Duel.SelectEffectYesNo(tp,c,96) then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESREPLACE)
+		local g=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_ONFIELD,0,1,1,nil)
+		e:SetLabelObject(g:GetFirst())
+		g:GetFirst():SetStatus(STATUS_DESTROY_CONFIRMED,true)
+		return true
+	else return false end
+end
+function s.repop(e,tp,eg,ep,ev,re,r,rp)
+	local tc=e:GetLabelObject()
+	tc:SetStatus(STATUS_DESTROY_CONFIRMED,false)
+	Duel.Destroy(tc,REASON_EFFECT+REASON_REPLACE)
 end

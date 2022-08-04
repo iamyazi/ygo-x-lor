@@ -38,8 +38,19 @@ function s.initial_effect(c)
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_SINGLE)
 	e4:SetCode(EFFECT_PIERCE)
-	e4:SetValue(DOUBLE_DAMAGE)
 	c:RegisterEffect(e4)
+	--atk
+	local e5=Effect.CreateEffect(c)
+	e5:SetType(EFFECT_TYPE_SINGLE)
+	e5:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetCode(EFFECT_UPDATE_ATTACK)
+	e5:SetValue(s.atkval)
+	c:RegisterEffect(e5)
+	--def
+	local e6=e5:Clone()
+	e6:SetCode(EFFECT_UPDATE_DEFENSE)
+	c:RegisterEffect(e6)
 end
 function s.amcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ)
@@ -83,4 +94,7 @@ function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 		c:RemoveOverlayCard(tp,1,1,REASON_EFFECT)
 		return true
 	else return false end
+end
+function s.atkval(e,c)
+	return c:GetOverlayCount()*300
 end

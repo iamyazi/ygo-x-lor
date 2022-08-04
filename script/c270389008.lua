@@ -20,6 +20,7 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_TO_GRAVE)
 	e3:SetProperty(EFFECT_FLAG_DELAY)
+	e3:SetCountLimit(1,id)
 	e3:SetCondition(s.spcon)
 	e3:SetCost(s.cpscost)
 	e3:SetTarget(s.sptg)
@@ -50,6 +51,9 @@ function s.desop(e,tp,eg,ep,ev,re,r,rp)
             e1:SetValue(800)
             e1:SetReset(RESET_EVENT+RESETS_STANDARD_DISABLE)
             Duel.RegisterEffect(e1,tp)
+			local e2=e1:Clone()
+			e2:SetCode(EFFECT_UPDATE_DEFENSE)
+			Duel.RegisterEffect(e2,tp)
         end
 	end
 end

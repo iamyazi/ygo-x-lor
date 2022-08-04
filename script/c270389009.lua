@@ -37,6 +37,18 @@ function s.initial_effect(c)
 	e3:SetTarget(s.target2)
 	e3:SetOperation(s.activate2)
 	c:RegisterEffect(e3)
+	--act this card on death
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,1))
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetProperty(EFFECT_FLAG_DELAY)
+	e4:SetRange(LOCATION_GRAVE)
+	e4:SetCode(EVENT_DESTROYED)
+	e4:SetCountLimit(1,id)
+	e4:SetCondition(s.thcon)
+	e4:SetTarget(s.thtg)
+	e4:SetOperation(s.thop)
+	c:RegisterEffect(e4)
 end
 function s.filter(c)
 	return c:IsFaceup()
@@ -61,7 +73,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD_DISABLE)
-		e1:SetValue(800)
+		e1:SetValue(400)
 		tc:RegisterEffect(e1)
 	end
 end
@@ -92,7 +104,42 @@ function s.activate2(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD_DISABLE)
-		e1:SetValue(800)
+		e1:SetValue(400)
+		tc:RegisterEffect(e1)
+	end
+end
+function s.thcfilter(c,tp)
+	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsType(TYPE_CONTINUOUS)
+		and c:GetPreviousControler()==tp and c:IsPreviousLocation(LOCATION_SZONE) and c:IsPreviousPosition(POS_FACEUP)
+end
+function s.thcon(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(s.thcfilter,1,e:GetHandler(),tp)
+end
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetHandler():GetActivateEffect():IsActivatable(tp,true,true) end
+	Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,e:GetHandler(),1,0,0)
+end
+function s.thop(e,tp,eg,ep,ev,re,r,rp)
+	local tc=e:GetHandler()
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,2))
+	local te=tc:GetActivateEffect()
+	if tc:IsRelateToEffect(e) and Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and te:IsActivatable(tp,true,true) then 
+		Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
+		local te=tc:GetActivateEffect()
+		local tep=tc:GetControler()
+		local cost=te:GetCost()
+		if cost
+			then cost(te,tep,eg,ep,ev,re,r,rp,1)
+		end
+		tc:AddCounter(0x388,3)
+		--Banish it if it leaves the field
+		local e1=Effect.CreateEffect(tc)
+		e1:SetDescription(3300)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_LEAVE_FIELD_REDIRECT)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CLIENT_HINT)
+		e1:SetReset(RESET_EVENT+RESETS_REDIRECT)
+		e1:SetValue(LOCATION_REMOVED)
 		tc:RegisterEffect(e1)
 	end
 end

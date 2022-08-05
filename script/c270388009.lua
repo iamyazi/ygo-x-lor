@@ -11,6 +11,9 @@ function s.initial_effect(c)
 	e1:SetTarget(s.tg)
 	e1:SetOperation(s.op)
 	c:RegisterEffect(e1)
+	local e2=e1:Clone()
+	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
+	c:RegisterEffect(e2)
 	aux.GlobalCheck(s,function()
 		local ge1=Effect.CreateEffect(c)
 		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -30,7 +33,7 @@ end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
     Duel.SetTargetPlayer(1-tp)
-	Duel.SetTargetParam(200)
+	Duel.SetTargetParam(400)
 	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,400)
 	Duel.SetOperationInfo(0,CATEGORY_DICE,nil,0,tp,5)
 end

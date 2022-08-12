@@ -41,7 +41,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e5)
 end
 function s.atkfilter(c)
-    return c:IsSetCard(0x1b58) and c:IsType(TYPE_MONSTER)
+    return c:IsSetCard(0x1b58) and c:IsType(TYPE_MONSTER) and not c:IsCode(id)
 end
 function s.atk(e,c)
     local gr=Duel.GetMatchingGroup(s.atkfilter,e:GetHandlerPlayer(),LOCATION_MZONE+LOCATION_GRAVE,0,nil)
@@ -84,11 +84,11 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_MZONE,0,1,nil)
 end
 function s.filter(c,tp)
-	return c:IsSetCard(0x1b58) and c:IsType(TYPE_MONSTER)
-	and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,1,nil,c:GetCode())
+	return c:IsSetCard(0x1b58) and c:IsType(TYPE_MONSTER) and not c:IsCode(id)
+		and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,1,nil,c:GetCode())
 end
 function s.thfilter(c,code)
-	return c:IsSetCard(0x1b58) and c:IsType(TYPE_MONSTER) and not c:IsCode(code) and not c:IsForbidden()
+	return c:IsSetCard(0x1b58) and c:IsType(TYPE_MONSTER) and not (c:IsCode(code) or c:IsCode(id) or c:IsForbidden())
 end
 function s.tg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

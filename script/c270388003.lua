@@ -62,7 +62,7 @@ function s.sctg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 end
 function s.atktg(e,c)
-	return c:IsLevel(1) and c:IsFaceup()
+	return (c:IsLevel(1) or c:IsRank(1)) and c:IsFaceup()
 end
 function s.scop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(e:GetHandler())

@@ -64,7 +64,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
     local c=e:GetHandler()
-    local atk = c:GetCounter(0x1776)*400
+    local atk = c:GetCounter(0x1776)*500
     if Duel.Destroy(c,REASON_EFFECT)>0 and Duel.IsPlayerCanSpecialSummonMonster(tp,id+1,0,TYPES_TOKEN,atk,0,1,RACE_THUNDER,ATTRIBUTE_DARK) then
         local token=Duel.CreateToken(tp,id+1)
         if Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP) then

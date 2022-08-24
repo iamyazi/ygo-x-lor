@@ -30,8 +30,9 @@ function s.initial_effect(c)
 	e3:SetDescription(aux.Stringid(id,1))
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e3:SetCode(EVENT_DESTROYED)
-    e3:SetProperty(EFFECT_FLAG_DELAY)
+	e3:SetCode(EVENT_LEAVE_FIELD)
+	e3:SetProperty(EFFECT_FLAG_DELAY)
+	e3:SetCondition(s.descon)
 	e3:SetTarget(s.sumtg)
 	e3:SetOperation(s.sumop)
 	e3:SetLabelObject(e2)
@@ -56,6 +57,10 @@ function s.tgcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.tgop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Destroy(e:GetHandler(),REASON_EFFECT)
+end
+function s.descon(e)
+	local c=e:GetHandler()
+	return c:IsPreviousPosition(POS_FACEUP)
 end
 function s.sumtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then 

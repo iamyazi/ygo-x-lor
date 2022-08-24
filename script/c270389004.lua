@@ -40,8 +40,9 @@ function s.initial_effect(c)
 	e4:SetDescription(aux.Stringid(id,1))
 	e4:SetCategory(CATEGORY_DRAW)
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e4:SetCode(EVENT_DESTROYED)
-    e4:SetProperty(EFFECT_FLAG_DELAY)
+	e4:SetCode(EVENT_LEAVE_FIELD)
+	e4:SetProperty(EFFECT_FLAG_DELAY)
+	e4:SetCondition(s.descon)
 	e4:SetTarget(s.drawtg)
 	e4:SetOperation(s.drawop)
 	c:RegisterEffect(e4)
@@ -50,6 +51,10 @@ s.counter_place_list={0x388}
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	e:GetHandler():AddCounter(0x388,2)
+end
+function s.descon(e)
+	local c=e:GetHandler()
+	return c:IsPreviousPosition(POS_FACEUP)
 end
 function s.drawcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsContains(e:GetHandler())

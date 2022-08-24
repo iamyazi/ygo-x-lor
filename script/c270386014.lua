@@ -29,7 +29,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.matfilter(c,lc,sumtype,tp)
-	return c:IsLevelBelow(4)
+	return c:IsLevelBelow(4) and c:IsSetCard(0x1770)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)

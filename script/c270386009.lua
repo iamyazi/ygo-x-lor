@@ -1,7 +1,7 @@
 --Aloof Travelers
 local s,id=GetID()
 function s.initial_effect(c)
-	c:EnableUnsummonable()
+	c:EnableReviveLimit()
     --pendulum summon
     Pendulum.AddProcedure(c)
     --pend eff

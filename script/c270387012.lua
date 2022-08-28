@@ -26,11 +26,11 @@ function s.regop(e,tp,eg,ep,ev,re,r,rp)
     if re:IsActiveType(TYPE_SPELL) then
 		Duel.RegisterFlagEffect(ep,id,RESET_PHASE+PHASE_END,0,2)
 	end
-	Duel.SetFlagEffectLabel(tp,id,Duel.GetTurnCount())
+	Duel.SetFlagEffectLabel(tp,id+1,Duel.GetTurnCount())
 end
 
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFlagEffect(tp,id)>=2 and Duel.GetTurnCount()~=Duel.GetFlagEffectLabel(tp,id)
+	return Duel.GetFlagEffect(tp,id)>=2 and Duel.GetTurnCount()~=Duel.GetFlagEffectLabel(tp,id+1)
 end
 function s.thfilter(c)
 	return c:IsType(TYPE_SPELL) and not c:IsCode(id) and not c:IsForbidden()

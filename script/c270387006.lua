@@ -47,10 +47,10 @@ function s.regop(e,tp,eg,ep,ev,re,r,rp)
     if re:IsActiveType(TYPE_SPELL) then
 		Duel.RegisterFlagEffect(ep,id,RESET_PHASE+PHASE_END,0,2)
 	end
-	Duel.SetFlagEffectLabel(tp,id,Duel.GetTurnCount())
+	Duel.SetFlagEffectLabel(tp,id+1,Duel.GetTurnCount())
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFlagEffect(tp,id)>=2 and Duel.GetTurnCount()==Duel.GetFlagEffectLabel(tp,id)+1
+	return Duel.GetFlagEffect(tp,id)>=2 and Duel.GetTurnCount()~=Duel.GetFlagEffectLabel(tp,id+1)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0

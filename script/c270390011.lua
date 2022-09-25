@@ -15,13 +15,6 @@ function s.initial_effect(c)
 	e1:SetTarget(s.thtg)
 	e1:SetOperation(s.thop)
     c:RegisterEffect(e1)
-	--ritual level
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_SINGLE)
-    e2:SetRange(LOCATION_MZONE)
-    e2:SetCode(EFFECT_RITUAL_LEVEL)
-    e2:SetValue(10)
-    c:RegisterEffect(e2)
 	--points to is celestial + tribute
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_FIELD)
@@ -31,6 +24,10 @@ function s.initial_effect(c)
     e3:SetTarget(s.tgtg)
     e3:SetValue(0x384)
 	c:RegisterEffect(e3)
+	local e4=e3:Clone()
+	e4:SetCode(EFFECT_RITUAL_LEVEL)
+	e4:SetValue(10)
+	c:RegisterEffect(e4)
 end
 function s.matfilter(c)
 	return c:IsSummonType(SUMMON_TYPE_NORMAL) and c:IsRace(RACE_SPELLCASTER)
@@ -54,6 +51,8 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.tgtg(e,c)
-    Ritual.AddWholeLevelTribute(e:GetHandler():GetLinkedGroup():GetFirst(),aux.FilterBoolFunction(Card.IsSetCard,0x384))
     return e:GetHandler():GetLinkedGroup():IsContains(c)
+end
+function s.tgop(e,tp,eg,ep,ev,re,r,rp)
+	Ritual.AddWholeLevelTribute(e:GetHandler():GetLinkedGroup(),aux.FilterBoolFunction(Card.IsSetCard,0x384))
 end

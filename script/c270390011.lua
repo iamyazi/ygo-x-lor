@@ -3,7 +3,6 @@ local s,id=GetID()
 function s.initial_effect(c)
     c:EnableReviveLimit()
     Link.AddProcedure(c,s.matfilter,1,1)
-	Ritual.AddWholeLevelTribute(c,aux.FilterBoolFunction(Card.IsAttribute,ATTRIBUTE_WATER))
 	--search
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
@@ -52,7 +51,4 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.tgtg(e,c)
     return e:GetHandler():GetLinkedGroup():IsContains(c)
-end
-function s.tgop(e,tp,eg,ep,ev,re,r,rp)
-	Ritual.AddWholeLevelTribute(e:GetHandler():GetLinkedGroup(),aux.FilterBoolFunction(Card.IsSetCard,0x384))
 end

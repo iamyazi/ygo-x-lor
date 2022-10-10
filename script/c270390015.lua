@@ -11,7 +11,7 @@ function s.initial_effect(c)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
 end
-
+s.listed_series={0x384}
 function s.spfilter(c,e,tp,rg,ft)
 	return c:IsSetCard(0x384) and c:IsCanBeSpecialSummoned(e,0,tp,false,true) and rg:CheckWithSumEqual(Card.GetLevel,lv,1,ft)
 end

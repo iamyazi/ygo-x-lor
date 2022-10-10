@@ -24,7 +24,7 @@ function s.initial_effect(c)
     e3:SetValue(0x384)
 	c:RegisterEffect(e3)
 	local e4=e3:Clone()
-	e4:SetCode(EFFECT_RITUAL_LEVEL)
+	e4:SetCode(EFFECT_CHANGE_LEVEL)
 	e4:SetValue(10)
 	c:RegisterEffect(e4)
 end

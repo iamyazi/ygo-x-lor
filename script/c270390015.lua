@@ -21,17 +21,11 @@ function s.spfilter(c,lv,e,tp)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and s.cfilter(chkc,e,tp) end
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingTarget(s.cfilter,tp,LOCATION_MZONE,0,1,nil,e,tp) end
+	if chk==0 then return Duel.IsExistingTarget(s.cfilter,tp,LOCATION_MZONE,0,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
 	local g=Duel.SelectTarget(tp,s.cfilter,tp,LOCATION_MZONE,0,1,1,nil,e,tp)
 	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,g,1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
-end
-function s.rescon(lv)
-	return function(sg,e,tp,mg)
-		return sg:GetSum(Card.GetLevel)==lv
-	end
 end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
@@ -43,7 +37,6 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		local sg=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_HAND,0,nil,slv,e,tp)
 		if #sg==0 then return end
 		local tg=sg:SelectWithSumEqual(tp,Card.GetLevel,slv,1,ft)
-		--local tg=aux.SelectUnselectGroup(sg,e,tp,1,ft,s.rescon(slv),1,tp,HINTMSG_SPSUMMON,nil,s.rescon(slv),0)
 		Duel.SpecialSummon(tg,SUMMON_TYPE_RITUAL,tp,tp,true,false,POS_FACEUP)
 	end
 end

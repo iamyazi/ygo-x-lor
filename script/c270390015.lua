@@ -8,47 +8,42 @@ function s.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetTarget(s.target)
-	e1:SetOperation(s.activate)
+	e1:SetOperation(s.operation)
 	c:RegisterEffect(e1)
 end
 s.listed_series={0x384}
-function s.spfilter(c,e,tp,rg,ft)
-	return c:IsSetCard(0x384) and c:IsCanBeSpecialSummoned(e,0,tp,false,true) and rg:CheckWithSumEqual(Card.GetLevel,lv,1,ft)
-end
 function s.cfilter(c,e,tp)
 	local lv=c:GetLevel()
-	return lv>0 and c:IsControler(tp) and c:IsFaceup()
+	return lv>0 and c:IsFaceup() and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_HAND,0,1,nil,lv,e,tp)
 end
-function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then
-		local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
-		local rg=Duel.GetMatchingGroup(s.cfilter,tp,LOCATION_MZONE,0,nil,e,tp)
-		return Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,e,tp,rg,ft)
+function s.spfilter(c,lv,e,tp)
+	return c:IsLevelBelow(lv) and c:IsSetCard(0x384) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RITUAL,tp,true,false)
+end
+function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and s.cfilter(chkc,e,tp) end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.IsExistingTarget(s.cfilter,tp,LOCATION_MZONE,0,1,nil,e,tp) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
+	local g=Duel.SelectTarget(tp,s.cfilter,tp,LOCATION_MZONE,0,1,1,nil,e,tp)
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,g,1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
+end
+function s.rescon(lv)
+	return function(sg,e,tp,mg)
+		return sg:GetSum(Card.GetLevel)==lv
 	end
-	local rg=Duel.SelectTarget(tp,s.cfilter,tp,LOCATION_MZONE,0,1,1,nil,e,tp)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
-function s.activate(e,tp,eg,ep,ev,re,r,rp)
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if not (tc and tc:IsRelateToEffect(e) and not tc:IsImmuneToEffect(e) and Duel.Release(tc,REASON_EFFECT)>0
-		and Duel.GetLocationCount(tp,LOCATION_MZONE)>0) then end
-	local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
-	local rg=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_DECK,0,nil,e,tp,rg,ft)
-	local g=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_DECK,0,nil,e,tp,rg,ft)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local sg=g:SelectWithSumEqual(tp,Card.GetLevel,tc:GetLevel(),1,Duel.GetLocationCount(tp,LOCATION_MZONE))
-	if sg and #sg>0 then
-		Duel.SpecialSummon(sg,0,tp,tp,false,true,POS_FACEUP)
+	if tc:IsRelateToEffect(e) and Duel.Release(tc,REASON_EFFECT)>0 then
+		local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
+		if ft<=0 then return end
+		if Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) then ft=1 end
+		local slv=tc:GetLevel()
+		local sg=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_HAND,0,nil,slv,e,tp)
+		if #sg==0 then return end
+		local tg=sg:SelectWithSumEqual(tp,Card.GetLevel,slv,1,ft)
+		--local tg=aux.SelectUnselectGroup(sg,e,tp,1,ft,s.rescon(slv),1,tp,HINTMSG_SPSUMMON,nil,s.rescon(slv),0)
+		Duel.SpecialSummon(tg,SUMMON_TYPE_RITUAL,tp,tp,true,false,POS_FACEUP)
 	end
---[[local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
-	local rg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	Duel.Release(rg,REASON_COST)
-	if ft<=0 then return end
-	local lv=rg:GetFirst():GetLevel()
-	local sp=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,rg,lv,ft,tp)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	if rg:CheckWithSumEqual(Card.GetLevel,lv,1,ft) then
-		local rm=rg:SelectWithSumEqual(tp,Card.GetLevel,lv,1,ft)
-		Duel.SpecialSummon(rm,0,tp,tp,false,true,POS_FACEUP)
-	end]]--
 end

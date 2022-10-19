@@ -32,7 +32,8 @@ function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsFaceup() and chkc:IsControler(1-tp) end
-	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,0,LOCATION_MZONE,1,nil) end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,0,LOCATION_MZONE,1,nil)
+		or (Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsPlayerCanSpecialSummonMonster(tp,270388006,0,TYPES_TOKEN,2000,1200,4,RACE_FISH,ATTRIBUTE_WATER)) end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
     Duel.SelectTarget(tp,Card.IsFaceup,tp,0,LOCATION_MZONE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_TOKEN,nil,1,0,0)
@@ -52,19 +53,19 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		local e2=e1:Clone()
 		e2:SetCode(EFFECT_UPDATE_DEFENSE)
 		tc:RegisterEffect(e2)
-        if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 
-			and Duel.IsPlayerCanSpecialSummonMonster(tp,270388006,0,TYPES_TOKEN,2000,1200,4,RACE_FISH,ATTRIBUTE_WATER) then
-			local token=Duel.CreateToken(tp,270388006)
-			Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP)
-			local e1=Effect.CreateEffect(c)
-			e1:SetType(EFFECT_TYPE_SINGLE)
-			e1:SetCode(EFFECT_UPDATE_ATTACK)
-			e1:SetReset(RESET_PHASE+PHASE_DAMAGE_CAL)
-			e1:SetCondition(s.atkcon)
-			e1:SetValue(400)
-			token:RegisterEffect(e1)
-			Duel.SpecialSummonComplete()
-		end
+	end
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 
+		and Duel.IsPlayerCanSpecialSummonMonster(tp,270388006,0,TYPES_TOKEN,2000,1200,4,RACE_FISH,ATTRIBUTE_WATER) then
+		local token=Duel.CreateToken(tp,270388006)
+		Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP)
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_UPDATE_ATTACK)
+		e1:SetReset(RESET_PHASE+PHASE_DAMAGE_CAL)
+		e1:SetCondition(s.atkcon)
+		e1:SetValue(400)
+		token:RegisterEffect(e1)
+		Duel.SpecialSummonComplete()
 	end
 end
 function s.atkcon(e)

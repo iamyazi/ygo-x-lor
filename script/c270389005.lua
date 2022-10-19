@@ -58,9 +58,9 @@ end
 function s.tgop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Destroy(e:GetHandler(),REASON_EFFECT)
 end
-function s.descon(e)
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsPreviousPosition(POS_FACEUP)
+	return c:IsPreviousPosition(POS_FACEUP) and (rp==tp and c:IsReason(REASON_EFFECT)) and c:GetPreviousControler()==tp
 end
 function s.sumtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then 

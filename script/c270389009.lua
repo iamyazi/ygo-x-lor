@@ -91,9 +91,9 @@ end
 function s.tgop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Destroy(e:GetHandler(),REASON_EFFECT)
 end
-function s.descon(e)
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsPreviousPosition(POS_FACEUP)
+	return c:IsPreviousPosition(POS_FACEUP) and (rp==tp and c:IsReason(REASON_EFFECT)) and c:GetPreviousControler()==tp
 end
 function s.target2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.filter(chkc) end

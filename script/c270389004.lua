@@ -52,9 +52,9 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	e:GetHandler():AddCounter(0x388,2)
 end
-function s.descon(e)
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsPreviousPosition(POS_FACEUP)
+	return c:IsPreviousPosition(POS_FACEUP) and (rp==tp and c:IsReason(REASON_EFFECT)) and c:GetPreviousControler()==tp
 end
 function s.drawcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsContains(e:GetHandler())

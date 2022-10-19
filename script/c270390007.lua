@@ -46,7 +46,7 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.tgfilter(c,e,tp,ft)
 	return c:IsFaceup() and c:IsSetCard(0x384) and c:IsAbleToDeck() and (ft>-1 or c:GetSequence()<5)
-		and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp,c:GetOriginalCodeRule())
+		and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,nil,e,tp,c:GetOriginalCodeRule())
 end
 function s.spfilter(c,e,tp,code)
 	return c:IsSetCard(0x384) and c:IsLevelBelow(3) and not c:IsOriginalCodeRule(code) and c:IsCanBeSpecialSummoned(e,0,tp,false,true)
@@ -58,7 +58,7 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return ft>-2 and Duel.IsExistingTarget(s.tgfilter,tp,LOCATION_MZONE,0,1,nil,e,tp,ft) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 	Duel.SelectTarget(tp,s.tgfilter,tp,LOCATION_MZONE,0,1,1,nil,e,tp,ft)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,0,LOCATION_DECK)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,0,LOCATION_DECK+LOCATION_GRAVE)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local rc=Duel.GetFirstTarget()
@@ -66,7 +66,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoDeck(rc,nil,2,REASON_EFFECT)
 	if not rc:IsLocation(LOCATION_DECK|LOCATION_EXTRA) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local tc=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp,rc:GetOriginalCodeRule()):GetFirst()
+	local tc=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,1,nil,e,tp,rc:GetOriginalCodeRule()):GetFirst()
     if tc then
 		Duel.SpecialSummon(tc,0,tp,tp,false,true,POS_FACEUP)
     end

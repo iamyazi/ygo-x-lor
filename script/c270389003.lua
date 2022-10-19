@@ -52,7 +52,7 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 					aux.Stringid(id,3))
 end
 function s.filter1(c)
-	return c:IsFaceup() and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsType(TYPE_CONTINUOUS)
+	return c:IsFaceup() and c:IsCode(id-1)
 end
 function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

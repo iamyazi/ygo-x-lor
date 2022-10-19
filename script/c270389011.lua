@@ -26,7 +26,8 @@ function s.initial_effect(c)
 	e2:SetTarget(s.postg)
 	e2:SetOperation(s.posop)
 	c:RegisterEffect(e2)
-	--destroy replace
+	--[[
+	-- REMOVED destroy replace
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
@@ -34,23 +35,28 @@ function s.initial_effect(c)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetTarget(s.reptg)
 	c:RegisterEffect(e3)
+	]]--
+
     --pierce
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_SINGLE)
 	e4:SetCode(EFFECT_PIERCE)
 	c:RegisterEffect(e4)
-	--atk
+	
+	--[[
+	-- REMOVED atk
 	local e5=Effect.CreateEffect(c)
 	e5:SetType(EFFECT_TYPE_SINGLE)
 	e5:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e5:SetRange(LOCATION_MZONE)
 	e5:SetCode(EFFECT_UPDATE_ATTACK)
 	e5:SetValue(s.atkval)
-	c:RegisterEffect(e5)
-	--def
+	--c:RegisterEffect(e5)
+	-- REMOVED def
 	local e6=e5:Clone()
 	e6:SetCode(EFFECT_UPDATE_DEFENSE)
-	c:RegisterEffect(e6)
+	--c:RegisterEffect(e6)
+	]]--
 end
 function s.amcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ)
@@ -87,6 +93,7 @@ function s.posop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ChangePosition(g,POS_FACEUP_DEFENSE)
 	end
 end
+--[[
 function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return not c:IsReason(REASON_REPLACE) and c:CheckRemoveOverlayCard(tp,1,REASON_EFFECT) end
@@ -98,3 +105,4 @@ end
 function s.atkval(e,c)
 	return c:GetOverlayCount()*300
 end
+--]]

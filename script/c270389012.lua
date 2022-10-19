@@ -25,7 +25,7 @@ function s.initial_effect(c)
 	e2:SetCondition(s.tgcon)
 	e2:SetOperation(s.tgop)
 	c:RegisterEffect(e2)
-    --sum dami'yin
+    --summon dami'yin
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,1))
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -57,9 +57,9 @@ end
 function s.tgop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Destroy(e:GetHandler(),REASON_EFFECT)
 end
-function s.descon(e)
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsPreviousPosition(POS_FACEUP)
+	return c:IsPreviousPosition(POS_FACEUP) and (rp==tp and c:IsReason(REASON_EFFECT)) and c:GetPreviousControler()==tp
 end
 function s.sumtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_EXTRA,0,1,nil,e,tp) end

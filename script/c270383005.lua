@@ -51,8 +51,7 @@ function s.tdop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if c:IsRelateToEffect(e) and tc:IsRelateToEffect(e) then
 		local g=Group.FromCards(c,tc)
-		Duel.SendtoDeck(g,nil,0,REASON_EFFECT)
-		Duel.ShuffleDeck(tp)
+		Duel.SendtoDeck(g,nil,1,REASON_EFFECT)
 		Duel.BreakEffect()
 		Duel.Draw(tp,1,REASON_EFFECT)
 	end

@@ -43,17 +43,7 @@ if not Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) and Duel.GetLocati
 	and Duel.IsPlayerCanSpecialSummonMonster(tp,270382000,0,TYPES_TOKEN,500,500,1,RACE_MACHINE,ATTRIBUTE_DARK) then
 	--summon token
 	local token=Duel.CreateToken(tp,270382000)
-	Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP)
-	--Cannot be tributed for a tribute summon
-	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetDescription(3304)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_UNRELEASABLE_SUM)
-	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CLIENT_HINT)
-	e1:SetValue(1)
-	e1:SetReset(RESET_EVENT+RESETS_STANDARD)
-	token:RegisterEffect(e1,true)
-	Duel.SpecialSummonComplete()
+	Duel.SpecialSummon(token,0,tp,tp,false,false,POS_FACEUP)
 end
 
 end

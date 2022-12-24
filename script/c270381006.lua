@@ -27,12 +27,15 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
     if tc and tc:IsRelateToEffect(e) then
 		if Duel.Destroy(tc,REASON_EFFECT)==0 then return end
     end
+	--Debug.Message(tc:GetPreviousSequence())
     local zone=(2^tc:GetPreviousSequence())<<8
+	--Debug.Message(zone)
     if tc:IsControler(tp) then
         zone=zone
     else
         zone=zone<<16
     end
+	--Debug.Message(zone)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
     e1:SetCode(EFFECT_DISABLE_FIELD)

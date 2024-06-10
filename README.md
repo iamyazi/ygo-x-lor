@@ -6,7 +6,7 @@ Windows: https://github.com/ProjectIgnis/edopro-assets/releases/download/40.0.3/
 MacOS: https://github.com/ProjectIgnis/edopro-assets/releases/download/40.0.3/ProjectIgnis-EDOPro-40.0.3-macOS.pkg 
 
 2. Add the YGO x LOR cards to your version of EDOPro:  
-  a. Navigate to your game files. They are in a folder named ProjectIgnis in the location where you installed the game. It should look something like this:  
+  a. Navigate to your game files. They are in a folder named ProjectIgnis in the location where you installed the game.
   b. Open the config folder.  
   c. Right-click the configs file, then open with a text editor such as Notepad.  
   d. Add the YGO x LOR cards repo to your version of EDOPro by copying the following and pasting it inside "repos":  
